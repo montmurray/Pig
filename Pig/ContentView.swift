@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var gameScore = 0
     @State private var randomValue = 0
     @State private var rotation = 0.0
+    @State private var gameOver = false
     var body: some View {
         NavigationView {
             ZStack {
@@ -33,6 +34,9 @@ struct ContentView: View {
                             withAnimation(.easeInOut(duration: 1)) {
                                 rotation += 360
                             }
+                            if gameScore >= 100 {
+                                gameOver = true
+                            }
                         }
                         .buttonStyle(CustomButtonStyle())
                     }
@@ -49,30 +53,37 @@ struct ContentView: View {
                     Spacer()
                 }
             }
-        }
-    }
-    func endTurn(){
-        turnScore = 0
-        randomValue = 0
-    }
-    func chooseRandom(times: Int) {
-        if times > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                randomValue = Int.random(in: 1...6)
-                chooseRandom(times: times - 1)
-            }
-        }
-        if times == 0 {
-            if randomValue == 1{
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    endTurn()
+            .alert(isPresented: $gameOver, content: {
+                Alert(title: Text("You won the game!"), dismissButton: .destructive(Text("Play Again"), action: { withAnimation {
+                    gameScore = 0
+                    gameOver = false
                 }
-            }
-            else {
-                turnScore += randomValue
-            }
+                }))
+            })
         }
     }
+func endTurn(){
+    turnScore = 0
+    randomValue = 0
+}
+func chooseRandom(times: Int) {
+    if times > 0 {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            randomValue = Int.random(in: 1...6)
+            chooseRandom(times: times - 1)
+        }
+    }
+    if times == 0 {
+        if randomValue == 1{
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                endTurn()
+            }
+        }
+        else {
+            turnScore += randomValue
+        }
+    }
+}
 }
 struct CustomText: View {
     let text: String
