@@ -41,7 +41,7 @@ struct ContentView: View {
                         .buttonStyle(CustomButtonStyle())
                     }
                     CustomText(text: "Game Score: \(gameScore)")
-                    Image("pips\(randomValue)")
+                    Image("pips \(randomValue)")
                         .resizable()
                         .frame(width: 150, height: 150)
                         .rotationEffect(.degrees(rotation))
